@@ -7,7 +7,14 @@ import mkcert from 'vite-plugin-mkcert'
 
 // https://vite.dev/config/
 export default defineConfig({
-  server: {https: {}},
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+      }
+    }
+  },
   plugins: [react(), mkcert()],
   resolve: {
     alias: {

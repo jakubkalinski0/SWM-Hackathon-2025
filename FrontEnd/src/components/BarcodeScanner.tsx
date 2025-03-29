@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import BarcodeScannerComponent from 'react-qr-barcode-scanner';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
+import { useNavigate } from 'react-router';
 
 const BarcodeScanner: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [barcode, setBarcode] = useState<string | null>(null);
-  // const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleScan = (result: string) => {
     if (result) {
@@ -16,51 +18,36 @@ const BarcodeScanner: React.FC = () => {
   };
 
   const handleError = (err: Error) => {
-    console.log(err)
+    console.log(err);
   };
 
   useEffect(() => {
-    console.log(barcode)
-    console.log(typeof barcode)
     if (!barcode || isNaN(Number(barcode))) {
       console.log('Barcode is not a valid number');
       return;
     }
+    
+    setIsLoading(true);
+    navigate('/product/' + barcode);
 
-    console.log('Barcode is a valid number:', barcode);
-
-
-  }, [barcode])
+  }, [barcode]);
 
   return (
     <div style={{ padding: '20px' }}>
-      <Button 
-        onClick={() => setIsModalOpen(true)}
-      >
-        Skanuj teraz!
-      </Button>
-      
-      {/* {barcode && (
-        <div style={{ marginTop: '20px', fontSize: '18px' }}>
-          Scanned Barcode: <strong>{barcode}</strong>
+      {isLoading && (
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="text-white text-xl font-bold">Loading...</div>
         </div>
-      )} */}
-
-      {/* {error && (
-        <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>
-      )} */}
+      )}
+      
+      <Button onClick={() => setIsModalOpen(true)}>Skanuj teraz!</Button>
 
       {isModalOpen && (
         <Card 
-        className='absolute py-10 top-[50%] left-[50%] right-0 bottom-0 w-[90%] translate-x-[-50%] translate-y-[-50%] aspect-square flex items-center justify-center flex-col z-10 bg-[#bde67c]'
-
-          
-          >
-          <Card 
-          className='mb-5 w-[90%]'
+          className='absolute py-10 top-[50%] left-[50%] w-[90%] translate-x-[-50%] translate-y-[-50%] aspect-square flex items-center justify-center flex-col z-10 bg-[#bde67c]'
         >
+          <Card className='mb-5 w-[90%]'>
             <BarcodeScannerComponent
-              
               width="100%"
               height="300px"
               onUpdate={(err, result) => {
@@ -68,24 +55,10 @@ const BarcodeScanner: React.FC = () => {
                 if (result) handleScan(result.getText());
               }}
             />
-            
           </Card>
-          <Button 
-              onClick={() => setIsModalOpen(false)}
-              // variant='reverse'
-              className='bg-white'
-              // style={{
-              //   marginTop: '20px',
-              //   padding: '10px 20px',
-              //   backgroundColor: '#dc3545',
-              //   color: 'white',
-              //   border: 'none',
-              //   borderRadius: '4px',
-              //   cursor: 'pointer'
-              // }}
-            >
-              Zamknij Skaner
-            </Button>
+          <Button onClick={() => setIsModalOpen(false)} className='bg-white'>
+            Zamknij Skaner
+          </Button>
         </Card>
       )}
     </div>
