@@ -38,6 +38,7 @@ const createDotIcon = (color: string) => {
       border-radius: 50%;
       border: 2px solid white;
       box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+      z-index: 10000;
     "></div>`,
     iconSize: [16, 16],
     iconAnchor: [8, 8],
