@@ -10,16 +10,16 @@ function Home() {
     <div className="min-h-screen p-4 bg-gray-50">
       <Alert 
         variant="default" 
-        className="relative overflow-visible pt-6 pb-6 bg-main"
+        className="relative overflow-visible pt-10 pb-6 bg-main"
       >
         <Card className="absolute -bottom-3 left-3 border-2 border-border bg-blank px-5 py-2">
           <h1 className="text-4xl font-heading text-black">
             EcoScan
           </h1>
         </Card>
-        <p className="text-right text-lg -mt-0 mr-4">
-          Lorem ipsum dolor sit amet
-        </p>
+        <Card className="absolute right-1 top-2 text-right text-lg -mt-0 mr-4 bg-blank p-2" style={{ maxWidth: 'min-content' }}>
+            🌿
+        </Card>
       </Alert>
 
       <main className="max-w-3xl mx-auto mt-8">
@@ -43,7 +43,7 @@ function Home() {
             </Card>
           </div>
           
-          <div className="mt-6 mb-6 mt-8">
+          <div className="mt-6 mt-8">
             <BarcodeScanner></BarcodeScanner>
           </div>
         </div>

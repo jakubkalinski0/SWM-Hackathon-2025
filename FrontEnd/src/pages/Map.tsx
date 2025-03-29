@@ -15,6 +15,31 @@ interface LocationPin {
   description?: string;
 }
 
+const createDotIcon = (color: string) => {
+  return new L.DivIcon({
+    className: '', // Upewniamy się, że Leaflet nie dodaje domyślnych styli
+    html: `<div style="
+      background-color: ${color};
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid white;
+      box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+    "></div>`,
+    iconSize: [16, 16],
+    iconAnchor: [8, 8],
+  });
+};
+
+const createUserLocationIcon = () => {
+  return new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+  });
+};
+
 const RecyclablesMap: React.FC = () => {
   const [locations, setLocations] = useState<LocationPin[]>([]);
   const [searchParams] = useSearchParams();
@@ -37,11 +62,17 @@ const RecyclablesMap: React.FC = () => {
   }, [searchParams]);
 
   useEffect(() => {
+    
     if (lat !== null && long !== null) {
       // Mock API call
-      fetch(`https://localhost.com:8000/closest_bin?lat=${lat}&long=${long}&category=${category}`)
-        .then(response => response.json())
-        .then(data => setLocations([]))
+      fetch(`http://localhost:8000/bins?lat=${lat}&long=${long}&category=${category}`)
+        .then(response => {
+          console.log(response)
+          return response.json()
+        })
+        .then(data => {
+          console.log(data)
+          setLocations(data)})
         .catch(error => console.error('Error fetching locations:', error));
     }
   }, [lat, long, category]);
@@ -93,7 +124,7 @@ const RecyclablesMap: React.FC = () => {
             <Marker 
               key={i}
               position={[pin[0], pin[1]]} 
-              icon={createPinIcon(pin[2])}
+              icon={createDotIcon(pin[2])}
             >
               <Popup>
                 <div className="p-2">
@@ -105,10 +136,16 @@ const RecyclablesMap: React.FC = () => {
               </Popup>
             </Marker>
           ))}
+
+        {lat  && long && (
+          <Marker position={[lat, long]} icon={createUserLocationIcon()}>
+            <Popup>Twoja aktualna lokalizacja</Popup>
+          </Marker>
+        )}
         </MapContainer>
       )}
       
-      <div className="absolute bottom-4 right-4 z-10 p-4 bg-white rounded-md shadow-lg border border-black transform translate-x-2 translate-y-2">
+      {/* <div className="absolute bottom-4 right-4 z-10 p-4 bg-white rounded-md shadow-lg border border-black transform translate-x-2 translate-y-2">
         <h3 className="font-bold mb-2">Legend</h3>
         <ul className="space-y-1">
           {(['plastik', 'metal', 'glass', 'papier', 'unknown'] as RecyclableType[]).map(type => (
@@ -121,7 +158,7 @@ const RecyclablesMap: React.FC = () => {
             </li>
           ))}
         </ul>
-      </div>
+      </div> */}
     </div>
   );
 };
