@@ -17,7 +17,7 @@ app.add_middleware(
 )
 
 @app.get("/bins")
-def get_bins(lat: int, long: int, category: str):
+def get_bins(lat: float, long: float, category: str):
     bins = fetch_waste_bins(category)
     return bins
 
