@@ -74,7 +74,7 @@ function ProductPage() {
         setProduct({
           id: data.id,
           name: data.name || noData,
-          image: data.image || 'https://www.svgrepo.com/show/340721/no-image.svg',
+          image: data.image_url || 'https://www.svgrepo.com/show/340721/no-image.svg',
           category: data.recycle_type || null,
           type: data.product_type || noData,
           barcode: data.barcode || noData,
@@ -206,7 +206,7 @@ function ProductPage() {
 
         <Button 
             className="absolute right-4 bottom-4 px-2 py-1 bg-blank"
-            onClick={() => {}}
+            onClick={() => {navigate("/")}}
         >
             <p className='p-0 m-0 text-lg'>&lt;-</p>
         </Button>

@@ -33,14 +33,14 @@ const BarcodeScanner: React.FC = () => {
   }, [barcode]);
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div>
       {isLoading && (
         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="text-white text-xl font-bold">Loading...</div>
         </div>
       )}
       
-      <Button onClick={() => setIsModalOpen(true)}>Skanuj teraz!</Button>
+      <Button className="text-lg" onClick={() => setIsModalOpen(true)}>Skanuj teraz!</Button>
 
       {isModalOpen && (
         <Card 
