@@ -16,9 +16,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/bins/{product_id}")
-def get_bins(product_id: int):
-    bins = fetch_waste_bins()
+@app.get("/bins?{lat, long, category}")
+def get_bins(lat: int, long: int, category: str):
+    bins = fetch_waste_bins(category)
     return bins
 
 @app.get("/closest_bin")
