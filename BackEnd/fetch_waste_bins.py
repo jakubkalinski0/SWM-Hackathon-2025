@@ -64,7 +64,7 @@ def fetch_waste_bins(lat: float, lon: float, type_filter=None):
             if "amenity" in tags and tags["amenity"] == "waste_basket":
                 type_ = "waste_basket"
             elif f"recycling:{type_filter}" in tags:
-                type_ = f"recycling_{type_filter}"
+                type_ = f"{type_filter}"
             else:
                 type_ = "unknown"
 
