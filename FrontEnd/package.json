@@ -10,9 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^7.0.1",
+    "@radix-ui/react-popover": "^1.1.6",
     "@radix-ui/react-slot": "^1.1.2",
     "@react-google-maps/api": "^2.18.1",
     "@types/leaflet": "^1.9.17",
+    "@types/leaflet-routing-machine": "^3.2.8",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "leaflet": "^1.9.4",
@@ -21,6 +26,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-leaflet": "^5.0.0",
+    "sql.js": "^1.13.0",
     "tailwind-merge": "^3.0.2",
     "tw-animate-css": "^1.2.5"
   },
