@@ -11,8 +11,13 @@ import {
     DialogTrigger,
     DialogTitle
 } from '@/components/ui/dialog'
+import { useNavigate } from 'react-router'
+
+
 
 function ProductPage() {
+
+  const navigate = useNavigate();
   const noData = 'Brak danych';
   const [product, setProduct] = useState<{
     id: number | null;
@@ -48,6 +53,9 @@ function ProductPage() {
     { value: 'metal', label: 'Metal', color: '#3b82f6' },
     { value: 'organic', label: 'Bio', color: '#84cc16' }
   ];
+
+  
+  
 
   // Pobieranie danych produktu
   useEffect(() => {
@@ -113,6 +121,31 @@ function ProductPage() {
     } catch (err) {
       console.error('Błąd podczas aktualizacji kategorii:', err);
     }
+  };
+
+  const handleMapClick = () => {
+    if (!navigator.geolocation) {
+      console.error("Geolocation is not supported by your browser");
+      return;
+    }
+  
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        
+        // Do something with the coordinates
+        console.log("Latitude:", latitude);
+        console.log("Longitude:", longitude);
+        
+        // You can use these variables here or pass them to another function
+        navigate(`/map/?lat=${latitude}&long=${longitude}&category=${product.category}`)
+      },
+      (error) => {
+        console.error("Error getting location:", error.message);
+        return
+      }
+    );
   };
 
   const getCategoryColor = (category: string | null): string => {
@@ -303,7 +336,7 @@ function ProductPage() {
                 <div className="flex gap-4">
                 <Button 
                     className="px-6 py-3 bg-blank text-lg"
-                    onClick={() => {}}
+                    onClick={() => {handleMapClick()}}
                 >
                     Nawiguj
                 </Button>
