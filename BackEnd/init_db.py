@@ -2,7 +2,7 @@ import sqlite3
 import json
 
 DB_FILE = "waste.db"
-DATA_FILE = "data.json"
+DATA_FILE = "processed_products.json"
 
 def init_db():
     conn = sqlite3.connect(DB_FILE)
@@ -29,6 +29,7 @@ def init_db():
         green_score TEXT DEFAULT NULL,
         carbon_footprint FLOAT DEFAULT NULL,
         number_of_verifications INTEGER DEFAULT 0,
+        image_url TEXT DEFAULT NULL,
         FOREIGN KEY (type_recycle_id) REFERENCES Types_recycle(type_recycle_id),
         FOREIGN KEY (type_id) REFERENCES Types(type_id)
     );
@@ -72,9 +73,9 @@ def init_db():
         type_recycle_id = types_recycle_dict.get(p.get("packaging_material"))
 
         cursor.execute('''
-        INSERT OR IGNORE INTO Product (name, type_recycle_id, type_id, barcode, green_score, carbon_footprint, number_of_verifications)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-        ''', (p.get("name"), type_recycle_id, type_id, p.get("barcode"), p.get("green_score"), p.get("carbon_footprint"), 0))
+        INSERT OR IGNORE INTO Product (name, type_recycle_id, type_id, barcode, green_score, carbon_footprint, number_of_verifications, image_url)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (p.get("name"), type_recycle_id, type_id, p.get("barcode"), p.get("green_score"), p.get("carbon_footprint"), 0, p.get("image_url")))
 
     conn.commit()
     conn.close()

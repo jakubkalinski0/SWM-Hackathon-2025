@@ -26,7 +26,6 @@ def get_closest_bin(x: float, y: float, type_: str = None):
     closest = closest_bin(x, y, type_)
     return {"closest_bin": closest}
 
-
 @app.get("/product/{barcode}")
 def get_product(barcode: str):
     """ Pobiera produkt po kodzie kreskowym lub tworzy nowy wpis """
@@ -41,8 +40,6 @@ def get_or_create_product(barcode: str):
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
 
-    # Sprawdzenie, czy produkt już istnieje
-    # Zmodyfikowane zapytanie z JOINami
     cursor.execute('''
     SELECT 
         P.id,
@@ -52,7 +49,8 @@ def get_or_create_product(barcode: str):
         P.barcode,
         P.green_score,
         P.carbon_footprint,
-        P.number_of_verifications
+        P.number_of_verifications,
+        P.image_url
     FROM Product P
     LEFT JOIN Types T ON P.type_id = T.type_id
     LEFT JOIN Types_recycle TR ON P.type_recycle_id = TR.type_recycle_id
@@ -71,18 +69,17 @@ def get_or_create_product(barcode: str):
             "barcode": result[4],
             "green_score": result[5],
             "carbon_footprint": result[6],
-            "number_of_verifications": result[7]
+            "number_of_verifications": result[7],
+            "image_url": result[8]
         }
 
-    # Jeśli produkt nie istnieje – tworzymy nowy wpis
     cursor.execute('''
-    INSERT INTO Product (name, type_recycle_id, type_id, barcode, green_score, carbon_footprint, number_of_verifications)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-    ''', ("Unknown Product", None, None, barcode, None, None, 0))
+    INSERT INTO Product (name, type_recycle_id, type_id, barcode, green_score, carbon_footprint, number_of_verifications, image_url)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    ''', ("Unknown Product", None, None, barcode, None, None, 0, None))
 
     conn.commit()
 
-    # Pobieranie nowego produktu z JOINami
     new_id = cursor.lastrowid
     cursor.execute('''
     SELECT 
@@ -93,7 +90,8 @@ def get_or_create_product(barcode: str):
         P.barcode,
         P.green_score,
         P.carbon_footprint,
-        P.number_of_verifications
+        P.number_of_verifications,
+        P.image_url
     FROM Product P
     LEFT JOIN Types T ON P.type_id = T.type_id
     LEFT JOIN Types_recycle TR ON P.type_recycle_id = TR.type_recycle_id
@@ -111,9 +109,9 @@ def get_or_create_product(barcode: str):
         "barcode": new_product[4],
         "green_score": new_product[5],
         "carbon_footprint": new_product[6],
-        "number_of_verifications": new_product[7]
+        "number_of_verifications": new_product[7],
+        "image_url": new_product[8]
     }
-
 
 def get_waste_type(product_id: int):
     """ Pobiera typ odpadów dla danego produktu """
@@ -130,7 +128,6 @@ def get_waste_type(product_id: int):
     conn.close()
 
     return {"type": result[0]} if result else None
-
 
 if __name__ == "__main__":
     import uvicorn
