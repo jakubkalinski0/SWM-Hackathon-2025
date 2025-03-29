@@ -284,6 +284,7 @@ const MapContainer: React.FC<MapContainerProps> = ({ userLocation }) => {
           attribution=''
           url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
         />
+
       </LeafletMap>
     </div>
   );
