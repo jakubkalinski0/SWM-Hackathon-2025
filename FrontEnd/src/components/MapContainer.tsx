@@ -188,7 +188,7 @@ const MapContainer: React.FC<MapContainerProps> = ({ userLocation }) => {
 
   const handleScan = () => {
     setIsScanning(true);
-    
+
     setTimeout(() => {
       if (!db || !userLocation) {
         setIsScanning(false);
@@ -208,7 +208,7 @@ const MapContainer: React.FC<MapContainerProps> = ({ userLocation }) => {
       // Generate route
       const newRoute = generateRoute(userLocation, result.bin);
       setRoute(newRoute);
-
+  
       setIsScanning(false);
     }, 2000);
   };
@@ -249,7 +249,6 @@ const MapContainer: React.FC<MapContainerProps> = ({ userLocation }) => {
           </Typography>
         </div>
       )}
-      
       <LeafletMap
         center={userLocation ? [userLocation.lat, userLocation.lng] : krakowZablocieCoords}
         zoom={17}
@@ -262,7 +261,6 @@ const MapContainer: React.FC<MapContainerProps> = ({ userLocation }) => {
             <Marker position={[userLocation.lat, userLocation.lng]} icon={userIcon} />
           </>
         )}
-        
         {/* Display recycling points */}
         {recyclingPoints.map(point => (
           <Marker
