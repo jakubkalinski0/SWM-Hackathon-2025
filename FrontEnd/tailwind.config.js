@@ -9,6 +9,7 @@ export default {
     extend: {
       colors: {
         main: 'var(--main)',
+        "main-lighter": 'var(--main-lighter)',
         overlay: 'var(--overlay)',
         bg: 'var(--bg)',
         bw: 'var(--bw)',

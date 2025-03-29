@@ -5,6 +5,7 @@
 :root {
   --main: #A3E636;
   --main-darker: #A3E636;
+  --main-lighter: #bde67c;
   --overlay: rgba(0, 0, 0, 0.8); /* background color overlay for alert dialogs, modals, etc. */
 
   --bg: #E0E7F1;
