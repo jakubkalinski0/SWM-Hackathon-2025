@@ -1,12 +1,18 @@
 import requests
 import json
+import math
 
-"""
-Connects to site 'overpass-turbo.eu' which contains information about bins and the types of waste that they can absorb.
-Returns the json file with all bins that we are interested in in our app.
-"""
+def haversine_distance(lat1, lon1, lat2, lon2):
+    """Oblicza odległość w kilometrach między dwoma punktami na Ziemi."""
+    R = 6371  # Promień Ziemi w km
+    lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
+    dlat = lat2 - lat1
+    dlon = lon2 - lon1
+    a = math.sin(dlat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    return R * c
 
-def fetch_waste_bins(type_filter=None):
+def fetch_waste_bins(lat: float, lon: float, type_filter=None):
     overpass_url = "https://overpass-api.de/api/interpreter"
 
     if type_filter is None:
@@ -43,21 +49,26 @@ def fetch_waste_bins(type_filter=None):
         return {"error": "Failed to fetch data"}
 
     data = response.json()
-
     results = []
+
     for element in data.get("elements", []):
-        lat = element.get("lat")
-        lon = element.get("lon")
+        bin_lat = element.get("lat")
+        bin_lon = element.get("lon")
         tags = element.get("tags", {})
 
-        if "amenity" in tags and tags["amenity"] == "waste_basket":
-            type_ = "waste_basket"
-        elif f"recycling:{type_filter}" in tags:
-            type_ = f"recycling_{type_filter}"
-        else:
-            type_ = "unknown"
+        # Obliczamy odległość od podanej lokalizacji
+        distance = haversine_distance(lat, lon, bin_lat, bin_lon)
 
-        results.append([lat, lon, type_])
+        # Filtrujemy tylko te kosze, które są w odległości <= 1 km
+        if distance <= 1:
+            if "amenity" in tags and tags["amenity"] == "waste_basket":
+                type_ = "waste_basket"
+            elif f"recycling:{type_filter}" in tags:
+                type_ = f"recycling_{type_filter}"
+            else:
+                type_ = "unknown"
+
+            results.append([bin_lat, bin_lon, type_, round(distance, 3)])
 
     with open("waste_bins.json", "w", encoding="utf-8") as f:
         json.dump(results, f, indent=2)
@@ -66,5 +77,6 @@ def fetch_waste_bins(type_filter=None):
 
 
 if __name__ == "__main__":
-    bins = fetch_waste_bins(type_filter=None)
-    print("Data saved to waste_bins.json")
+    lat, lon = 50.06143, 19.93658  # Przykładowe współrzędne w Krakowie
+    bins = fetch_waste_bins(lat, lon, type_filter="glass")
+    print(bins)

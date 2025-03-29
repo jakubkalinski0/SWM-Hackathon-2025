@@ -18,13 +18,13 @@ app.add_middleware(
 
 @app.get("/bins")
 def get_bins(lat: float, long: float, category: str):
-    bins = fetch_waste_bins(category)
+    bins = fetch_waste_bins(lat, long, category)
     return bins
 
 @app.get("/closest_bin")
 def get_closest_bin(x: float, y: float, type_: str = None):
     closest = closest_bin(x, y, type_)
-    return {"closest_bin": closest}
+    return closest
 
 
 @app.get("/product/{barcode}")
@@ -133,5 +133,4 @@ def get_waste_type(product_id: int):
 
 if __name__ == "__main__":
     import uvicorn
-
     uvicorn.run(app, host="0.0.0.0", port=8000)
