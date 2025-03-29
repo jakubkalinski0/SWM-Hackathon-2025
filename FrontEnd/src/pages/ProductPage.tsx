@@ -4,6 +4,13 @@ import { Alert } from '@/components/ui/alert'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { useState } from 'react'
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTrigger,
+} from '@/components/ui/dialog'
+
 
 function getCategoryColor(category: string | null): string {
   
@@ -15,11 +22,7 @@ function getCategoryColor(category: string | null): string {
     'Bio': '#84cc16'      // lime-500
   };
 
-  return category ? colors[category] || '#e5e7eb' : '#e5e7eb'; // default gray-200
-}
-
-function handleAddCategory() {
-
+  return category ? colors[category] || '#e5e7eb' : '#e5e7eb';
 }
 
 function ProductPage() {
@@ -30,8 +33,7 @@ function ProductPage() {
         id: 1,
         name: 'Butelka wody mineralnej 1,5L',
         image: 'https://niemirka.com/1048-large_default/zywiec-15-l-niegazowany-552-butelki-paleta.jpg',
-        // image: null,
-        category: null, // Może być null
+        category: null,
         barcode: '5901234567890',
         greenscore: 65,
         carbon_footprint: 0.25,
@@ -42,6 +44,27 @@ function ProductPage() {
         ...mockProduct,
         // category: null
       });
+
+    const categories = [
+        { value: 'Plastik', label: 'Plastik', color: '#ef4444' },
+        { value: 'Szkło', label: 'Szkło', color: '#22c55e' },
+        { value: 'Papier', label: 'Papier', color: '#eab308' },
+        { value: 'Metal', label: 'Metal', color: '#3b82f6' },
+        { value: 'Bio', label: 'Odpad bio', color: '#84cc16' }
+    ];
+
+    const [selectedCategory, setSelectedCategory] = useState('');
+
+
+    const handleAddCategory = () => {
+        if (selectedCategory) {
+            setProduct({
+            ...product,
+            category: selectedCategory
+            });
+        }
+    };
+    
 
     return (
         <div className="min-h-screen p-4 bg-gray-50">
@@ -64,13 +87,29 @@ function ProductPage() {
           </Alert>
     
           <main className="max-w-3xl mx-auto mt-16">
+
             <Card className="p-6 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] relative">
                 {/* Liczba weryfikacji w prawym górnym rogu */}
                 <Badge 
                 variant="default" 
-                className="absolute -top-3 -right-3 bg-white border-2 border-black px-3 py-1 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
+                className="absolute -top-3 -right-3 bg-white border-2 border-black px-3 py-1 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] flex items-center gap-1"
                 >
-                Weryfikacje: {product.verification_count}
+                {/* Ikona weryfikacji - np. znaczek checkmark */}
+                <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    width="16" 
+                    height="16" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="3" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round"
+                >
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <span>{product.verification_count}</span>
                 </Badge>
 
                 {/* Główna zawartość produktu */}
@@ -100,14 +139,48 @@ function ProductPage() {
                         {product.category}
                         </Badge>
                     ) : (
-                        <>
-                        <Button 
-                            className="px-3 py-1 text-sm bg-blank"
-                            onClick={handleAddCategory}
-                        >
-                            + Dodaj kategorię
-                        </Button>
-                        </>
+                        <Dialog>
+
+                            <DialogTrigger asChild>
+                                <Button className="px-3 py-1 text-sm bg-blank" >
+                                    + Dodaj kategorię
+                                </Button>
+                            </DialogTrigger>
+
+                            <DialogContent className="sm:max-w-[425px] bg-main">
+                                <DialogHeader className="text-xl font-bold mb-4 p-4 border-b-2 border-black">
+                                Wybierz kategorię produktu
+                                </DialogHeader>
+                                
+                                <div className="p-4">
+                                <div className="space-y-2 mb-6">
+                                    {categories.map((category) => (
+                                    <button
+                                        key={category.value}
+                                        className={`w-full text-left p-3 border-2 bg-blank border-black flex items-center rounded-lg shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] ${selectedCategory === category.value ? 'bg-green-500' : ''}`}
+                                        onClick={() => setSelectedCategory(category.value)}
+                                    >
+                                        <span 
+                                        className="w-4 h-4 rounded-full mr-3" 
+                                        style={{ backgroundColor: category.color }}
+                                        />
+                                        {category.label}
+                                    </button>
+                                    ))}
+                                </div>
+                                
+                                <div className="flex justify-end gap-2 pt-4 border-t-2 border-black">
+                                    <Button
+                                    onClick={handleAddCategory}
+                                    disabled={!selectedCategory}
+                                    className="bg-green-500 hover:bg-green-600 border-2 border-black"
+                                    >
+                                    Potwierdź wybór
+                                    </Button>
+                                </div>
+                                </div>
+                            </DialogContent>
+                        </Dialog>
                     )}
                     </div>
 
