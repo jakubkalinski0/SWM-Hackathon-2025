@@ -1,8 +1,9 @@
 import '@/styles/App.css'
-import { Button } from '@/components/ui/button'
+
 import { Alert } from '@/components/ui/alert'
 import { Card } from '@/components/ui/card'
 import Typewriter from "@/fancy/components/text/typewriter"
+import BarcodeScanner from '@/components/BarcodeScanner'
 
 function Home() {
   return (
@@ -43,9 +44,7 @@ function Home() {
           </div>
           
           <div className="mt-6 mb-6 mt-8">
-            <Button size="lg">
-              <p className="font-bold" style={{ fontSize: '26px' }}>Skanuj teraz!</p>
-            </Button>
+            <BarcodeScanner></BarcodeScanner>
           </div>
         </div>
       </main>
