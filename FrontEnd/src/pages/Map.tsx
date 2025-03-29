@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Button } from '@/components/ui/button';
-import { useSearchParams } from 'react-router';
+import { useSearchParams, useNavigate } from 'react-router';
 
 // Define types
 type RecyclableType = 'plastik' | 'metal' | 'glass' | 'papier' | 'unknown';
@@ -15,7 +15,20 @@ interface LocationPin {
   description?: string;
 }
 
+const COLORS_MAP = {
+  glass: "#4CAF50",       // Green
+  paper: "#2196F3",      // Blue
+  plastic: "#FFC107",    // Amber
+  metal: "#9E9E9E",      // Grey
+  organic: "#795548",    // Brown
+  glass_bottles: "#8BC34A",  // Light Green
+  plastic_bottles: "#FF9800", // Orange
+  waste_basket: "#F44336",   // Red
+  container: "#607D8B"      // Blue Grey
+};
+
 const createDotIcon = (color: string) => {
+  color = COLORS_MAP[color]
   return new L.DivIcon({
     className: '', // Upewniamy się, że Leaflet nie dodaje domyślnych styli
     html: `<div style="
@@ -41,6 +54,7 @@ const createUserLocationIcon = () => {
 };
 
 const RecyclablesMap: React.FC = () => {
+  const navigate = useNavigate();
   const [locations, setLocations] = useState<LocationPin[]>([]);
   const [searchParams] = useSearchParams();
   const [lat, setLat] = useState<number | null>(null);
@@ -67,11 +81,11 @@ const RecyclablesMap: React.FC = () => {
       // Mock API call
       fetch(`http://localhost:8000/bins?lat=${lat}&long=${long}&category=${category}`)
         .then(response => {
-          console.log(response)
+          // console.log(response)
           return response.json()
         })
         .then(data => {
-          console.log(data)
+          // console.log(data)
           setLocations(data)})
         .catch(error => console.error('Error fetching locations:', error));
     }
@@ -102,7 +116,7 @@ const RecyclablesMap: React.FC = () => {
   return (
     <div className="relative h-screen w-screen">
       <Button 
-        onClick={() => window.history.back()}
+        onClick={() => navigate('/')}
         className="absolute top-4 left-4 z-[10000] bg-white"
         aria-label="Go back"
       >
@@ -115,25 +129,25 @@ const RecyclablesMap: React.FC = () => {
           zoom={100} 
           style={{ height: '100%', width: '100%' }}
         >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
+        <TileLayer
+          url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
+        />
           
-          {locations.map((i, pin) => (
+          {locations.map(( pin,i ) => (
+            
             <Marker 
               key={i}
               position={[pin[0], pin[1]]} 
               icon={createDotIcon(pin[2])}
             >
-              <Popup>
-                <div className="p-2">
+              {/* <Popup> */}
+                {/* <div className="p-2">
                   <h3 className="font-bold text-lg capitalize">{pin.type}</h3>
                   {pin.description && <p className="mt-1">{pin.description}</p>}
                   <p className="mt-1">Latitude: {pin.location[0]}</p>
                   <p>Longitude: {pin.location[1]}</p>
                 </div>
-              </Popup>
+              </Popup> */}
             </Marker>
           ))}
 
