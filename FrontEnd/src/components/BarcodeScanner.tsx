@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import BarcodeScannerComponent from 'react-qr-barcode-scanner';
-import axios from 'axios';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
+import { useNavigate } from 'react-router';
 
 const BarcodeScanner: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [barcode, setBarcode] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleScan = (result: string) => {
     if (result) {
@@ -27,17 +28,8 @@ const BarcodeScanner: React.FC = () => {
     }
     
     setIsLoading(true);
-    
-    axios.get(`http://localhost:8000/products/${barcode}`)
-      .then(response => {
-        console.log('Asset data:', response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching asset:', error);
-      })
-      .finally(() => {
-        setTimeout(() => setIsLoading(false), 1000); // Simulate loading delay
-      });
+    navigate('/product/' + barcode);
+
   }, [barcode]);
 
   return (
