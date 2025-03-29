@@ -16,7 +16,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/bins?{lat, long, category}")
+@app.get("/bins")
 def get_bins(lat: int, long: int, category: str):
     bins = fetch_waste_bins(category)
     return bins
