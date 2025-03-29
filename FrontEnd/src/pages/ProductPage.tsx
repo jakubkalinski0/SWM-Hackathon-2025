@@ -6,7 +6,8 @@ import { Badge } from '@/components/ui/badge'
 import { useState } from 'react'
 
 function getCategoryColor(category: string | null): string {
-  const colors: Record<string, string> = {
+  
+    const colors: Record<string, string> = {
     'Plastik': '#ef4444', // red-500
     'Szkło': '#22c55e',   // green-500
     'Papier': '#eab308',  // yellow-500
@@ -18,16 +19,19 @@ function getCategoryColor(category: string | null): string {
 }
 
 function handleAddCategory() {
-    // Logika dodawania kategorii
+
 }
 
 function ProductPage() {
+
+    const noData = 'Brak danych';
 
     const mockProduct = {
         id: 1,
         name: 'Butelka wody mineralnej 1,5L',
         image: 'https://niemirka.com/1048-large_default/zywiec-15-l-niegazowany-552-butelki-paleta.jpg',
-        category: 'Plastik', // Może być null
+        // image: null,
+        category: null, // Może być null
         barcode: '5901234567890',
         greenscore: 65,
         carbon_footprint: 0.25,
@@ -36,7 +40,7 @@ function ProductPage() {
     
     const [product, setProduct] = useState({
         ...mockProduct,
-        category: null
+        // category: null
       });
 
     return (
@@ -72,62 +76,65 @@ function ProductPage() {
                 {/* Główna zawartość produktu */}
                 <div className="grid md:grid-cols-2 gap-6">
                 {/* Lewa kolumna - zdjęcie */}
-                <div className="border-2 border-black p-2 bg-white">
+                <Card className="p-2 bg-white">
                     <img 
-                    src={product.image} 
-                    alt={product.name}
+                    src={product.image ? product.image : 'https://www.svgrepo.com/show/340721/no-image.svg'} 
+                    alt={product.name ? product.name : noData}
                     className="w-full h-auto object-cover"
                     />
-                </div>
+                </Card>
 
                 <div>
-                    <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
+                    <h1 className="text-3xl font-bold mb-2">{product.name ? product.name : noData}</h1>
                     
-                    {/* Kategoria */}
-                    {product.category && (
-                    <Badge 
-                    className="mb-4 text-lg font-bold border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] transition-all"
-                    style={{ 
-                        backgroundColor: getCategoryColor(product.category)
+                    {/* Sekcja kategorii */}
+                    <div className="mb-4 flex items-center gap-3">
+                    Kategoria: 
+                    {product.category ? (
+                        <Badge 
+                        className="text-lg border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
+                        style={{ 
+                            backgroundColor: getCategoryColor(product.category),
                         }}
-                    >
+                        >
                         {product.category}
-                    </Badge>
+                        </Badge>
+                    ) : (
+                        <>
+                        <Button 
+                            className="px-3 py-1 text-sm bg-blank"
+                            onClick={handleAddCategory}
+                        >
+                            + Dodaj kategorię
+                        </Button>
+                        </>
                     )}
+                    </div>
 
                     {/* Dane produktu */}
                     <div className="space-y-3 mb-6">
-                        <div className="flex justify-between">
-                            <span className="font-medium">Kod kreskowy:</span>
-                            <span>{product.barcode}</span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span className="font-medium">GreenScore:</span>
-                            <span>{product.greenscore}/100</span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span className="font-medium">Ślad węglowy:</span>
-                            <span>{product.carbon_footprint} kg CO2</span>
-                        </div>
+                    <div className="flex justify-between">
+                        <span className="font-medium">Kod kreskowy:</span>
+                        <span>{product.barcode ? product.barcode : noData}</span>
+                    </div>
+                    <div className="flex justify-between">
+                        <span className="font-medium">GreenScore:</span>
+                        <span>{product.greenscore ? product.greenscore : noData}/100</span>
+                    </div>
+                    <div className="flex justify-between">
+                        <span className="font-medium">Ślad węglowy:</span>
+                        <span>{product.carbon_footprint ? product.carbon_footprint : noData} kg CO2</span>
+                    </div>
                     </div>
 
                     {/* Przyciski akcji */}
                     <div className="flex gap-4">
                     <Button 
-                        className="px-6 py-3 bg-blue-500 hover:bg-blue-600 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
+                        className="px-6 py-3 bg-blank text-lg"
                         onClick={() => {}}
                     >
                         Nawiguj
                     </Button>
-                    
-                    {!product.category && (
-                        <Button 
-                        className="px-6 py-3 bg-green-500 hover:bg-green-600 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
-                        onClick={() => handleAddCategory()}
-                        >
-                        Dodaj kategorię
-                        </Button>
-                    )}
                     </div>
                 </div>
                 </div>
