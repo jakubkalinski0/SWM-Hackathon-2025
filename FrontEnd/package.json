@@ -26,6 +26,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "leaflet": "^1.9.4",
+    "lucide-react": "^0.485.0",
     "motion": "^12.6.2",
     "quagga": "^0.12.1",
     "react": "^19.1.0",
