@@ -16,15 +16,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/bins/{product_id}")
-def get_bins(product_id: int):
-    bins = fetch_waste_bins()
-    return {"product_id": product_id, "bins": bins}
+@app.get("/bins?{lat, long, category}")
+def get_bins(lat: int, long: int, category: str):
+    bins = fetch_waste_bins(category)
+    return bins
 
 @app.get("/closest_bin")
 def get_closest_bin(x: float, y: float, type_: str = None):
     closest = closest_bin(x, y, type_)
     return {"closest_bin": closest}
+
 
 @app.get("/product/{barcode}")
 def get_product(barcode: str):
@@ -128,6 +129,7 @@ def get_waste_type(product_id: int):
     conn.close()
 
     return {"type": result[0]} if result else None
+
 
 if __name__ == "__main__":
     import uvicorn
