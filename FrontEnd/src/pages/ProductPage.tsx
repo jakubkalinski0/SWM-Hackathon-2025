@@ -45,17 +45,14 @@ function ProductPage() {
   const [selectedCategory, setSelectedCategory] = useState('');
 
   const categories = [
-    { value: 'plastic', label: 'Plastik', color: '#ef4444' },
-    { value: 'plastic_bottles', label: 'Butelki plastikowe', color: '#dc2626' },
-    { value: 'glass', label: 'Szkło', color: '#22c55e' },
-    { value: 'glass_bottles', label: 'Butelki szklane', color: '#16a34a' },
-    { value: 'paper', label: 'Papier', color: '#eab308' },
-    { value: 'metal', label: 'Metal', color: '#3b82f6' },
-    { value: 'organic', label: 'Bio', color: '#84cc16' }
+    { value: 'plastic', label: 'Plastik', color: '#febe34' },
+    { value: 'plastic_bottles', label: 'Butelki plastikowe', color: '#febe34' },
+    { value: 'glass', label: 'Szkło', color: '#51b150' },
+    { value: 'glass_bottles', label: 'Butelki szklane', color: '#51b150' },
+    { value: 'paper', label: 'Papier', color: '#5c69c7' },
+    { value: 'metal', label: 'Metal', color: '#d33f3d' },
+    { value: 'organic', label: 'Bio', color: '#6b605c' }
   ];
-
-  
-  
 
   // Pobieranie danych produktu
   useEffect(() => {
@@ -98,30 +95,12 @@ function ProductPage() {
   }, []);
 
   const handleAddCategory = async () => {
-    if (!selectedCategory) return;
-    
-    try {
-      // Wysłanie nowej kategorii do backendu
-      const response = await fetch(`http://localhost:8000/product/${product.barcode}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          type_recycle: selectedCategory
-        })
-      });
 
-      if (response.ok) {
         setProduct(prev => ({
           ...prev,
           category: selectedCategory
-        }));
-      }
-    } catch (err) {
-      console.error('Błąd podczas aktualizacji kategorii:', err);
+        }))
     }
-  };
 
   const handleMapClick = () => {
     if (!navigator.geolocation) {
@@ -150,13 +129,13 @@ function ProductPage() {
 
   const getCategoryColor = (category: string | null): string => {
     const colors: Record<string, string> = {
-      'plastic': '#ef4444',
-      'plastic_bottles': '#dc2626',
-      'glass': '#22c55e',
-      'glass_bottles': '#16a34a',
-      'paper': '#eab308',
-      'metal': '#3b82f6',
-      'organic': '#84cc16'
+      'plastic': '#febe34',
+      'plastic_bottles': '#febe34',
+      'glass': '#51b150',
+      'glass_bottles': '#51b150',
+      'paper': '#5c69c7',
+      'metal': '#d33f3d',
+      'organic': '#6b605c'
     };
     return category ? colors[category] || '#e5e7eb' : '#e5e7eb';
   };
@@ -285,7 +264,8 @@ function ProductPage() {
                                 {categories.map((category) => (
                                 <button
                                     key={category.value}
-                                    className={`w-full text-left p-3 border-2 bg-blank border-black flex items-center rounded-lg shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] ${selectedCategory === category.value ? 'bg-green-500' : ''}`}
+                                    className={`w-full text-left p-3 border-2 bg-blank border-black flex items-center rounded-lg shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]`}
+                                    style={{ backgroundColor: selectedCategory === category.value ? getCategoryColor(selectedCategory) : '' }}
                                     onClick={() => setSelectedCategory(category.value)}
                                 >
                                     <span 
