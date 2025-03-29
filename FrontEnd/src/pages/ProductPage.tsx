@@ -26,7 +26,7 @@ function ProductPage() {
     category: string | null;
     type: string | null;
     barcode: string | null;
-    greenscore: number | null;
+    greenscore: string | null;
     carbon_footprint: number | null;
     verification_count: number;
   }>({
@@ -308,7 +308,7 @@ function ProductPage() {
                 </div>
                 <div className="flex justify-between">
                     <span className="font-medium">Ślad węglowy:</span>
-                    <span>{product.carbon_footprint ? product.carbon_footprint + " kg CO2" : noData}</span>
+                    <span>{product.carbon_footprint ? product.carbon_footprint * 100 + " gCO2/100g" : noData}</span>
                 </div>
                 </div>
 
