@@ -18,13 +18,13 @@ interface LocationPin {
 const COLORS_MAP = {
   glass: "#4CAF50",       // Green
   paper: "#2196F3",      // Blue
-  plastic: "#FFC107",    // Amber
-  metal: "#9E9E9E",      // Grey
-  organic: "#795548",    // Brown
-  glass_bottles: "#8BC34A",  // Light Green
-  plastic_bottles: "#FF9800", // Orange
-  waste_basket: "#F44336",   // Red
-  container: "#607D8B"      // Blue Grey
+  plastic: "#febe34",    // Amber
+  metal: "#d33f3d",      // Grey
+  organic: "#6b605c",    // Brown
+  glass_bottles: "#51b150",  // Light Green
+  plastic_bottles: "#febe34", // Orange
+  waste_basket: "#000000",   // Red
+  container: "#000000"      // Blue Grey
 };
 
 const createDotIcon = (color: string) => {
@@ -120,11 +120,12 @@ const RecyclablesMap: React.FC = () => {
         className="absolute top-4 left-4 z-[10000] bg-white"
         aria-label="Go back"
       >
-        Back
+        <b>Powrót</b>
       </Button>
       
       {lat !== null && long !== null && (
         <MapContainer 
+          zoomControl={false} 
           center={[lat, long]} 
           zoom={100} 
           style={{ height: '100%', width: '100%' }}
@@ -139,6 +140,7 @@ const RecyclablesMap: React.FC = () => {
               key={i}
               position={[pin[0], pin[1]]} 
               icon={createDotIcon(pin[2])}
+              className='z-[100000]'
             >
               {/* <Popup> */}
                 {/* <div className="p-2">
