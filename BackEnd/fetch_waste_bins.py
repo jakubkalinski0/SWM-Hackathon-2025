@@ -14,11 +14,15 @@ def fetch_waste_bins(type_filter=None):
         [out:json][timeout:25];
         area["name"="Kraków"]["admin_level"="8"]->.krakow;
         (
-          node["amenity"="waste_basket"](area.krakow);
-          node["recycling_type"="container"](area.krakow);
-          node["recycling:paper"="yes"](area.krakow);
-          node["recycling:glass"="yes"](area.krakow);
-          node["recycling:plastic"="yes"](area.krakow);
+            node["amenity"="waste_basket"](area.krakow);
+            node["recycling_type"="container"](area.krakow);
+            node["recycling:paper"="yes"](area.krakow);
+            node["recycling:glass"="yes"](area.krakow);
+            node["recycling:plastic"="yes"](area.krakow);
+            node["recycling:metal"="yes"](area.krakow);
+            node["recycling:organic"="yes"](area.krakow);
+            node["recycling:glass_bottles"="*"](area.krakow);
+            node["recycling:plastic_bottles"="*"](area.krakow);
         );
         out body;
         """
