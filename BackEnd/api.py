@@ -42,9 +42,21 @@ def get_or_create_product(barcode: str):
     cursor = conn.cursor()
 
     # Sprawdzenie, czy produkt już istnieje
+    # Zmodyfikowane zapytanie z JOINami
     cursor.execute('''
-    SELECT id, name, type_recycle_id, type_id, barcode, green_score, carbon_footprint, number_of_verifications
-    FROM Product WHERE barcode = ?
+    SELECT 
+        P.id,
+        P.name,
+        TR.type_name AS recycle_type,
+        T.type_name AS product_type,
+        P.barcode,
+        P.green_score,
+        P.carbon_footprint,
+        P.number_of_verifications
+    FROM Product P
+    LEFT JOIN Types T ON P.type_id = T.type_id
+    LEFT JOIN Types_recycle TR ON P.type_recycle_id = TR.type_recycle_id
+    WHERE P.barcode = ?
     ''', (barcode,))
 
     result = cursor.fetchone()
@@ -54,8 +66,8 @@ def get_or_create_product(barcode: str):
         return {
             "id": result[0],
             "name": result[1],
-            "type_recycle_id": result[2],
-            "type_id": result[3],
+            "recycle_type": result[2],
+            "product_type": result[3],
             "barcode": result[4],
             "green_score": result[5],
             "carbon_footprint": result[6],
@@ -70,17 +82,32 @@ def get_or_create_product(barcode: str):
 
     conn.commit()
 
-    # Pobranie nowego produktu
+    # Pobieranie nowego produktu z JOINami
     new_id = cursor.lastrowid
-    cursor.execute('SELECT * FROM Product WHERE id = ?', (new_id,))
+    cursor.execute('''
+    SELECT 
+        P.id,
+        P.name,
+        TR.type_name,
+        T.type_name,
+        P.barcode,
+        P.green_score,
+        P.carbon_footprint,
+        P.number_of_verifications
+    FROM Product P
+    LEFT JOIN Types T ON P.type_id = T.type_id
+    LEFT JOIN Types_recycle TR ON P.type_recycle_id = TR.type_recycle_id
+    WHERE P.id = ?
+    ''', (new_id,))
+
     new_product = cursor.fetchone()
     conn.close()
 
     return {
         "id": new_product[0],
         "name": new_product[1],
-        "type_recycle_id": new_product[2],
-        "type_id": new_product[3],
+        "recycle_type": new_product[2],
+        "product_type": new_product[3],
         "barcode": new_product[4],
         "green_score": new_product[5],
         "carbon_footprint": new_product[6],
