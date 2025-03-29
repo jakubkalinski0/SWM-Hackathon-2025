@@ -11,8 +11,6 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog'
 
-import { useParams } from 'react-router';
-
 
 function getCategoryColor(category: string | null): string {
   
