@@ -1,11 +1,20 @@
 import sqlite3
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fetch_waste_bins import fetch_waste_bins
 from closest_bin import closest_bin
 
 DB_FILE = "waste.db"
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/bins/{product_id}")
 def get_bins(product_id: int):
@@ -26,7 +35,6 @@ def get_product(barcode: str):
         raise HTTPException(status_code=500, detail="Error creating product")
 
     return product
-
 
 def get_or_create_product(barcode: str):
     """ Pobiera produkt z bazy lub tworzy nowy wpis """
