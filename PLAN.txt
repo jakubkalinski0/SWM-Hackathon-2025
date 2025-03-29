@@ -1,0 +1,7 @@
+=======PLAN========
+
+1. Robimy zdjęcie kodu i na jego podstawie pythonem przetwarzamy kod, żeby dostać z niego stringa
+2. Na podstawie stringa wysyłamy zapytanie do https://www.barcodelookup.com/api i sprawdzamy czy jest tam info o produkcie (jak status 200 to jest jak inny to nie ma)
+3. JEŚLI NIE MA TAM INFO to sprawdzamy czy jest w naszej lokalnej bazie
+4. Jeśli nie ma ani tu ani tu to zwracamy info i pozwalamy użytkownikowi dodac do naszej lokalnej bazy
+5. Jeśli jest gdzieś to info to zwracamy dane o produkcie razem z aktualną lokalizacją użytkownika i lokalizacją najbliższego kosza w którym można ten produkt wyrzucić
