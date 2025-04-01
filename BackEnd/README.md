@@ -1,1 +1,0 @@
-# SWM-Hackathon-2025 BackEnd
