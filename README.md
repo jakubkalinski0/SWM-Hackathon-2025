@@ -2,7 +2,7 @@
 
 EcoScan is a web application designed to promote environmental awareness and simplify the recycling process. Scan a product's barcode, learn about its environmental impact and recycling category, and find the nearest appropriate recycling bins on an interactive map. 
 
-🏆 **This project was developed for the _Software Mansion Hackathon 2025_ and proudly secured 1st place at the event.** 🏆
+🏆 **This project was developed for the _Software Mansion Hackathon 2025_ and proudly secured 1st place.** 🏆
 
 <p align="center">
   <br/>
