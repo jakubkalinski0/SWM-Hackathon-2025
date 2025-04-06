@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -17,6 +17,7 @@ const krakowLocations: LocationPin[] = [
   { id: '3', location: [50.05457, 19.92645], type: 'glass' },
   { id: '4', location: [50.06647, 19.91368], type: 'papier' }
 ];
+
 const createDotIcon = (color: string) => {
   return new L.DivIcon({
     className: '', 
@@ -32,6 +33,7 @@ const createDotIcon = (color: string) => {
     iconAnchor: [8, 8],
   });
 };
+
 const createUserLocationIcon = () => {
   return new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
@@ -49,8 +51,22 @@ const RecyclablesMap: React.FC = () => {
   const [selectedBin, setSelectedBin] = useState<LocationPin | null>(null);
   const [routeCoordinates, setRouteCoordinates] = useState<[number, number][]>([]);
   const [loadingRoute, setLoadingRoute] = useState<boolean>(false);
+  const [isNavigating, setIsNavigating] = useState<boolean>(false);
+  const [currentDistance, setCurrentDistance] = useState<number>(0);
+  
+  const mapRef = useRef<L.Map | null>(null);
+  const isNavigatingRef = useRef(isNavigating);
+  const selectedBinRef = useRef(selectedBin);
 
   const krakowCenter: [number, number] = [50.06143, 19.93658];
+
+  useEffect(() => {
+    isNavigatingRef.current = isNavigating;
+  }, [isNavigating]);
+
+  useEffect(() => {
+    selectedBinRef.current = selectedBin;
+  }, [selectedBin]);
 
   const getRouteDistance = async (start: [number, number], end: [number, number]) => {
     try {
@@ -71,14 +87,15 @@ const RecyclablesMap: React.FC = () => {
         `https://router.project-osrm.org/route/v1/driving/${start[1]},${start[0]};${end[1]},${end[0]}?overview=full`
       );
       const data = await response.json();
-      return decodePolyline(data.routes?.[0]?.geometry);
+      const distance = data.routes?.[0]?.distance || 0;
+      const coords = decodePolyline(data.routes?.[0]?.geometry);
+      return { coords, distance };
     } catch (error) {
       console.error('Błąd pobierania geometrii trasy:', error);
-      return [];
+      return { coords: [], distance: 0 };
     }
   };
 
-  // Prosta implementacja dekodera polyline
   const decodePolyline = (encoded: string): [number, number][] => {
     const points = [];
     let index = 0;
@@ -138,8 +155,9 @@ const RecyclablesMap: React.FC = () => {
       });
 
       if (closestBin) {
-        const coords = await getRouteCoordinates(userLoc, closestBin.location);
+        const { coords, distance } = await getRouteCoordinates(userLoc, closestBin.location);
         setRouteCoordinates(coords);
+        setCurrentDistance(distance);
         setSelectedBin(closestBin);
       }
     } finally {
@@ -152,8 +170,9 @@ const RecyclablesMap: React.FC = () => {
     
     setLoadingRoute(true);
     try {
-      const coords = await getRouteCoordinates(userLocation, bin.location);
+      const { coords, distance } = await getRouteCoordinates(userLocation, bin.location);
       setRouteCoordinates(coords);
+      setCurrentDistance(distance);
       setSelectedBin(bin);
     } finally {
       setLoadingRoute(false);
@@ -183,15 +202,34 @@ const RecyclablesMap: React.FC = () => {
 
   useEffect(() => {
     if (!navigator.geolocation) return;
+    
     const watchId = navigator.geolocation.watchPosition(
       (position) => {
         const newLocation: [number, number] = [position.coords.latitude, position.coords.longitude];
         setUserLocation(newLocation);
-        findNearestBin(newLocation);
+        
+        if (isNavigatingRef.current && selectedBinRef.current) {
+          getRouteCoordinates(newLocation, selectedBinRef.current.location)
+            .then(({ coords, distance }) => {
+              setRouteCoordinates(coords);
+              setCurrentDistance(distance);
+              if (mapRef.current) {
+                mapRef.current.flyTo(newLocation, mapRef.current.getZoom(), {
+                  animate: true,
+                  duration: 1
+                });
+              }
+            });
+        } else {
+          if (!selectedBinRef.current) {
+            findNearestBin(newLocation);
+          }
+        }
       },
       (error) => console.error("Błąd lokalizacji: ", error.message),
       { enableHighAccuracy: true, maximumAge: 10000, timeout: 5000 }
     );
+    
     return () => navigator.geolocation.clearWatch(watchId);
   }, []);
 
@@ -212,6 +250,7 @@ const RecyclablesMap: React.FC = () => {
         center={krakowCenter} 
         zoom={14} 
         style={{ height: '100%', width: '100%' }}
+        ref={mapRef}
       >
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
@@ -259,15 +298,40 @@ const RecyclablesMap: React.FC = () => {
 
         {selectedBin && !loadingRoute && (
           <div className="absolute top-4 left-4 bg-white p-4 rounded-lg shadow-lg">
-            <h3 className="font-bold">Wybrany śmietnik:</h3>
-            <p className="capitalize">{selectedBin.type}</p>
-            <p>{addresses[selectedBin.id]}</p>
-            <button 
-              className="mt-2 bg-blue-500 text-white px-3 py-1 rounded"
-              onClick={() => findNearestBin(userLocation!)}
-            >
-              Pokaż najbliższy
-            </button>
+            {!isNavigating ? (
+              <>
+                <h3 className="font-bold">Wybrany śmietnik:</h3>
+                <p className="capitalize">{selectedBin.type}</p>
+                <p>{addresses[selectedBin.id]}</p>
+                <div className="flex gap-2 mt-2">
+                  <button 
+                    className="bg-blue-500 text-white px-3 py-1 rounded"
+                    onClick={() => findNearestBin(userLocation!)}
+                  >
+                    Pokaż najbliższy
+                  </button>
+                  <button 
+                    className="bg-green-500 text-white px-3 py-1 rounded"
+                    onClick={() => setIsNavigating(true)}
+                  >
+                    Start nawigacji
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <h3 className="font-bold">Nawigacja do:</h3>
+                <p className="capitalize">{selectedBin.type}</p>
+                <p>{addresses[selectedBin.id]}</p>
+                <p className="mt-2">Pozostało do przejścia: {(currentDistance / 1000).toFixed(1)} km</p>
+                <button 
+                  className="mt-2 bg-red-500 text-white px-3 py-1 rounded w-full"
+                  onClick={() => setIsNavigating(false)}
+                >
+                  Zatrzymaj nawigację
+                </button>
+              </>
+            )}
           </div>
         )}
       </MapContainer>
