@@ -4,6 +4,12 @@ EcoScan is a web application designed to promote environmental awareness and sim
 
 🏆 **This project was developed for the SWM Hackathon and proudly secured 1st place at the event.** 🏆
 
+<p align="center">
+  <br/>
+  <img src="https://github.com/user-attachments/assets/ef1628cb-0a1e-4899-b835-b63adf864288" width=700px/>
+  <br/>
+</p>
+
 ## Overview
 
 In today's world, proper waste disposal and recycling are crucial. EcoScan aims to make this process easier and more informative for everyone. By simply scanning a product's barcode using your device's camera, you can:
@@ -49,20 +55,26 @@ EcoScan empowers users to make more informed decisions about waste disposal, con
   - Nearby recycling bins relevant to the product's category, fetched dynamically based on user location.
   - Custom map markers color-coded by bin type.
 
-↩️ **Navigation:** Uses `react-router-dom` for seamless page transitions between the home screen, product page, and map view.
+↩️ **Navigation:** Uses `react-router` for seamless page transitions between the home screen, product page, and map view.
+
+## Contributors
+- [pFornagiel](https://github.com/pFornagiel/) 👑 – idea author, acted as **team lead** overseeing project development and product design, implemented barcode scanning, and fixed critical dependency issues.
+- [Blajszu](https://github.com/Blajszu/) – built the entire **frontend** and UI, integrated it with the backend alongside @jakubkalinski0 .  
+- [jakubkalinski0](https://github.com/jakubkalinski0/) – developed the **API**, backend, and database; handled backend–frontend integration alongside @Blajszu .
+- [mcjwsn](https://github.com/mcjwsn) – implemented the **interactive map** displaying bin locations and user geolocation.  
+- [radbene](https://github.com/radbene) – **scraped product data** to populate the database.
 
 ## Technologies Used
 
 -   **Frontend Framework:** React
 -   **Language:** TypeScript
--   **UI Library:** Shadcn/ui (built on Radix UI & Tailwind CSS)
+-   **UI Library:** Shadcn/ui and Neobrutalism Components
 -   **Styling:** Tailwind CSS, Global CSS (`App.css`)
 -   **Routing:** React Router (`react-router-dom`)
--   **State Management:** React Hooks (`useState`, `useEffect`)
 -   **Mapping:** Leaflet, React Leaflet
 -   **Barcode Scanning:** `react-qr-barcode-scanner`
 -   **API Communication:** Fetch API
--   **Build Tool:** Vite (Likely, based on typical React/TS setups) or Create React App
+-   **Build Tool:** Vite
 
 ## Backend API
 
