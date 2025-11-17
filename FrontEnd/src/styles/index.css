@@ -1,20 +1,40 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .gradient {
+    background-size: 50px 50px;
+    background-image: linear-gradient(to right, #e4e4e7 1px, transparent 1px),
+                      linear-gradient(to bottom, #e4e4e7 1px, transparent 1px);
+  }
+  
+  /* .dark .gradient {
+    background-image: linear-gradient(to right, #262626 1px, transparent 1px),
+                      linear-gradient(to bottom, #262626 1px, transparent 1px);
+  } */
+}
+
+@layer base {
+  * {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-optical-sizing: auto;
+  }
+}
   
 :root {
-  --main: #A3E636;
-  --main-darker: #A3E636;
-  --main-lighter: #bde67c;
+  --main: #77b900;
+  --main-darker: #77b900;;
+  --main-lighter: #f6ffe5;
   --overlay: rgba(0, 0, 0, 0.8); /* background color overlay for alert dialogs, modals, etc. */
 
-  --bg: #E0E7F1;
+  --bg: #ffffff;
   --bw: #fff; /* white and secondary black e.g. utility class variant would be: bg-[#fff] dark:bg-[#212121] */
-  --blank: #000; /* blank black and white */
-  --border: #000;
-  --text: #000;
-  --mtext: #000; /* text that is placed on background with main color e.g. text color of default button */
-  --ring: #000;
+  --blank: #2b2c27; /* blank black and white */
+  --border: #2b2c27;
+  --text: #2b2c27;
+  --mtext: #2b2c27; /* text that is placed on background with main color e.g. text color of default button */
+  --ring: #2b2c27;
   --ring-offset: #fff;
 
   --border-radius: 5px;
@@ -32,11 +52,11 @@
   --bg: #2c312b;
   --bw: #212121;
   --blank: #fff;
-  --border: #000;
+  --border: #2c312b;
   --text: #e6e6e6;
-  --mtext: #000;
+  --mtext: #2c312b;
   --ring: #fff;
-  --ring-offset: #000;
+  --ring-offset: #2c312b;
 
   --shadow: var(--box-shadow-x) var(--box-shadow-y) 0px 0px var(--border);
 }
