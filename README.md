@@ -61,7 +61,7 @@ EcoScan empowers users to make more informed decisions about waste disposal, con
 - [**pFornagiel**](https://github.com/pFornagiel/) 👑 – idea author, acted as **team lead** overseeing project development and product design, implemented barcode scanning, and fixed critical dependency issues.
 - [**Blajszu**](https://github.com/Blajszu/) – built the entire **frontend** and UI, integrated it with the backend alongside **jakubkalinski0** .  
 - [**jakubkalinski0**](https://github.com/jakubkalinski0/) – developed the **API**, backend, and database; handled backend–frontend integration alongside **Blajszu**.
-- [**mcjwsn**](https://github.com/mcjwsn) – implemented the **interactive map** displaying bin locations and user geolocation.  
+- [**macwsn**](https://github.com/macwsn) – implemented the **interactive map** displaying bin locations and user geolocation.  
 - [**radbene**](https://github.com/radbene) – **scraped product data** to populate the database.
 
 ## Technologies Used
